@@ -1,4 +1,4 @@
 baseURL = "https://memorandom.netlify.com/"
-languageCode = "ja-JP"
+languageCode = "ja-jp"
 title = "Memorandam"
 theme = "liquorice"
