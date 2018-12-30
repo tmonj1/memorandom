@@ -1,4 +1,4 @@
-baseURL = "http://example.org/"
+baseURL = "https://vigorous-jackson-7b6986.netlify.com/"
 languageCode = "ja-JP"
 title = "Memorandam"
 theme = "liquorice"
