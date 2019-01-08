@@ -1,7 +1,7 @@
 ---
 title: "IE 11 対応の ES6 コードを書くための準備"
 date: 2018-12-30T23:40:33+09:00
-draft: true
+draft: false
 ---
 
 ## 何が問題か?

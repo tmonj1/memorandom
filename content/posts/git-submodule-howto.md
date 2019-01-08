@@ -1,7 +1,7 @@
 ---
 title: "Git submodule の使い方"
 date: 2018-12-31T09:27:45+09:00
-draft: true
+draft: false
 ---
 
 ## submodule とは
