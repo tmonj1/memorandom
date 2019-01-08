@@ -1,0 +1,14 @@
+{
+  "version": "0.1",
+  "language": "en",
+  "words": [
+    "browserslist",
+    "browserslistrc",
+    "polyfill"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    ".git",
+    "cSpell.json"
+  ]
+}
