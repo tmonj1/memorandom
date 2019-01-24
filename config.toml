@@ -1,7 +1,8 @@
 baseURL = "https://memorandom.netlify.com/"
-languageCode = "en-us"
+languageCode = "ja-JP"
 title = "Memorandam"
 theme = "liquorice"
+hasCJKLanguage = true
 
 [params]
   author = "tmonji"
