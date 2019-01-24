@@ -10,9 +10,11 @@ ES6 で書いても Babel でトランスパイルし、polyfill を使えば IE
 
 ただ残念ながらこれだけでは動かないこともあります。たとえば、ES6 の新機能である Proxy を使っていたりすると IE では動作しません。なぜなら、Babel の polyfill は Proxy には対応していないからです[^1]。
 
-Proxy を使っている箇所はそのまま Babel と polyfill を素通りして IE 11 で実行され、当然ながら IE 11 は Proxy など知らないのでエラーになります。
+Babel は ES6 以降の新しい JavaScript のシンタックスを ES5 に変換してくれますが、残念ながら Proxy には非対応なので放置されます。Proxy を使っている箇所はそのまま Babel と polyfill を素通りして IE 11 で実行され、当然ながら IE 11 は Proxy など知らないのでエラーになります。
 
-なので IE 11 向けにコードを書くときは、単に Babel を使うだけでなく、IE 11 が非対応の機能を使わないように気をつける必要があります。
+Proxy はほぼ唯一の例外のようなので、これだけであれば Proxy は使わないようにコードを書けばよいのですが、このほかにブラウザがサポートしている機能の違いもあります。たとえば fetch API は IE 11 ではサポートされていませんが、これは JavaScript の問題ではないため Babel は感知しません。このため fetch メソッドを使ったコードも Babel と Polyfill を素通りして IE 11 でエラーになります。
+
+というわけで IE 11 向けにコードを書くときは、単に Babel を使うだけでなく、IE 11 が非対応の機能を使わないように気をつける必要があります。
 
 では、IE 11 はどの機能をサポートし、どの機能をサポートしていないのでしょうか？これを調べるのはかなり大変そうですが、幸いなことに IE 11 のみならずさまざまなブラウザがどの機能をサポートしているかをまとめた [Can I Use](http://caniuse.com) というサイトがあります。これを参照すれば一件落着 ・・・とはいきません。
 
@@ -26,7 +28,7 @@ Browserslist とは、ターゲットブラウザ (=動作対象とするブラ�
 
 ```text:.browserslistrc
 ie 11
-ast 2 edge versions
+last 2 edge versions
 last 2 chrome versions
 last 2 safari versions
 ```
@@ -50,7 +52,7 @@ Browserslist に対応したツールとしは以下のものがあります。
 
 ### (1) eslint-plugin-compat
 
-まず eslint-plugin-compat を使いましょう。この ESLint のプラグインは、JavaScript でターゲットブラウザでサポートされていない機能を使っていると警告を出力してくれます。
+まず eslint-plugin-compat を使いましょう。この ESLint のプラグインは、JavaScript でターゲットブラウザでサポートされていない機能を使っていると警告を出力してくれます。上述の例で言うと、fetch メソッドを使っている箇所があれば警告してくれます。
 
 Visual Studio Code で ESLint プラグインを使っていれば、非サポート機能を使ったコードを書いたそばから ESLint の警告が表示されます。動作イメージについては[デモ動画](https://www.npmjs.com/package/eslint-plugin-compat)が公式ページにあるので、そちらをみてください。
 
@@ -65,7 +67,7 @@ $ npm install --save-dev @babel/core @babel/cli @babel/preset-env
 npm install --save @babel/polyfill
 ```
 
-インストールが終わったら設定ファイル (.babelrc) を追加します。最小限の設定は以下のとおりです。"useBuiltIns" に "usage" を指定すれば必要な polyfill だけを取り込んでトランスパイルしてくれるようになります。
+インストールが終わったら設定ファイル (.babelrc) を追加します。最小限の設定は以下のとおりです。"useBuiltIns" に "usage" を指定すれば必要な polyfill だけを取り込んでトランスパイルしてくれるようになります[^3]。
 
 ```JavaScript:.babelrc
 {
@@ -79,6 +81,7 @@ npm install --save @babel/polyfill
   ]
 }
 ```
+
 ### (3) PostCSS プラグイン
 
 ここからは JavaScript ではなく CSS 向けの設定です。CSS 用の変換・チェックツールは PostCSS のプラグインとして提供されているので、まず PostCSS をインストールします。
@@ -87,7 +90,7 @@ npm install --save @babel/polyfill
 $ npm install --save-dev postcss
 ```
 
-次に postcss-preset-env をインストールします。postcss-preset-env を使えばモダン CSS で記述しても非モダンブラウザ向けに自動で変換してくれます。
+次に postcss-preset-env をインストールします。postcss-preset-env を使えばモダン CSS で記述しても非モダンブラウザ向けに自動で変換してくれます (以前は postcss-cssnext が使われていましたが、)。
 
 ```shell:
 $ npm install --save-dev postcss-preset-env
@@ -111,3 +114,6 @@ $$$ ミニマル設定のプロジェクトを作る
 [^1]: Babel の公式ページの Learn ES2015 の Proxy の節(https://Babeljs.io/docs/en/learn#proxies) の末尾に "Unsupported Feature" と書かれています。
 
 [^2]: 恐竜に教える現代のCSS – Part 1 (https://postd.cc/actualize-networkmodern-css-explained-for-dinosaurs/)
+
+[^3]: Babel の公式ドキュメントを見ると "usage" は "experimental" (実験的機能) となっているので安全のためには false に指定し、polyfill を別途インクルードしたほうが良いかもしれません。
+(https://babeljs.io/docs/en/babel-preset-env#usebuiltins-usage-experimental)
