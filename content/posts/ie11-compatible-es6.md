@@ -213,7 +213,7 @@ postss-preset-env は PostCSS のプラグインで、babel で言えば @babel/
 $ npm install --save-dev postcss postcss-preset-env
 ```
 
-次に PostCSS の設定ファイルを追加します。最小限の設定ファイルは以下のとおりです。
+次に PostCSS の設定ファイル(postcss.config.js)を追加します。最小限の設定ファイルは以下のとおりです。
 
 ```javascript:postcss.config.js
 const postcssPresetEnv = require('postcss-preset-env')
